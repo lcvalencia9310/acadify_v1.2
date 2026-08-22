@@ -16,40 +16,32 @@ public class SyllabusService {
         this.syllabusRepository = syllabusRepository;
     }
 
-    // Obtener todos los syllabus
     public List<Syllabus> obtenerTodos() {
         return syllabusRepository.findAll();
     }
 
-    // Obtener un syllabus por id
     public Syllabus obtenerPorId(Long id) {
         return syllabusRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Syllabus no encontrado con ID: " + id));
     }
 
-    // Guardar un nuevo syllabus
     public Syllabus guardarSyllabus(Syllabus syllabus) {
         return syllabusRepository.save(syllabus);
     }
 
-    // Actualizar un syllabus existente
     public Syllabus actualizarSyllabus(Long id, Syllabus syllabusActualizado) {
         Optional<Syllabus> syllabusExistente = syllabusRepository.findById(id);
 
         if (syllabusExistente.isPresent()) {
             Syllabus syllabus = syllabusExistente.get();
-            syllabus.setNombreAsignatura(syllabusActualizado.getNombreAsignatura());
             syllabus.setDescripcion(syllabusActualizado.getDescripcion());
-            syllabus.setCreditos(syllabusActualizado.getCreditos());
-            syllabus.setIntensidadHoraria(syllabusActualizado.getIntensidadHoraria());
-            syllabus.setProgramaAcademico(syllabusActualizado.getProgramaAcademico());
+            syllabus.setAsignatura(syllabusActualizado.getAsignatura());
             return syllabusRepository.save(syllabus);
         } else {
             throw new RuntimeException("Syllabus no encontrado con ID: " + id);
         }
     }
 
-    // Eliminar un syllabus por id
     public void eliminarSyllabus(Long id) {
         if (syllabusRepository.existsById(id)) {
             syllabusRepository.deleteById(id);
