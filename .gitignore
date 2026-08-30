@@ -34,3 +34,5 @@ build/
 
 # Project exclude paths
 /${project.build.directory}/classes/
+
+src/main/resources/firebase-service-account.json
