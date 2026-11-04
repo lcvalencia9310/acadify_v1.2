@@ -8,7 +8,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/programas")
-@CrossOrigin(origins = "https://acadify-frontend-one.vercel.app")
 public class ProgramaController {
 
     private final ProgramaService programaService;

@@ -4,7 +4,6 @@ WORKDIR /app
 COPY pom.xml .
 COPY src ./src
 RUN mvn clean package -DskipTests
-RUN ls -la /app/target/
 
 # Etapa 2: Imagen final
 FROM eclipse-temurin:21-jre-alpine

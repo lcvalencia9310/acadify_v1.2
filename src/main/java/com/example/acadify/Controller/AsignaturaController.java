@@ -8,7 +8,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/asignaturas")
-@CrossOrigin(origins = "https://acadify-frontend-one.vercel.app")
 
 public class AsignaturaController {
 

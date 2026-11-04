@@ -8,7 +8,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/resultados-aprendizaje")
-@CrossOrigin(origins = "https://acadify-frontend-one.vercel.app")
 public class ResultadoAprendizajeController {
 
     private final ResultadoAprendizajeService resultadoAprendizajeService;
