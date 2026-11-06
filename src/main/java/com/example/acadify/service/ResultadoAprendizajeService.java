@@ -1,5 +1,6 @@
 package com.example.acadify.service;
 
+import com.example.acadify.exception.RecursoNoEncontradoException;
 import com.example.acadify.model.ResultadoAprendizaje;
 import com.example.acadify.repository.ResultadoAprendizajeRepository;
 import org.springframework.stereotype.Service;
@@ -22,7 +23,7 @@ public class ResultadoAprendizajeService {
 
     public ResultadoAprendizaje obtenerPorId(Long id) {
         return resultadoAprendizajeRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Resultado de aprendizaje no encontrado con ID: " + id));
+                .orElseThrow(() -> new RecursoNoEncontradoException("Resultado de aprendizaje no encontrado con ID: " + id));
     }
 
     public ResultadoAprendizaje guardarResultado(ResultadoAprendizaje resultado) {
@@ -38,7 +39,7 @@ public class ResultadoAprendizajeService {
             resultado.setAsignatura(resultadoActualizado.getAsignatura());
             return resultadoAprendizajeRepository.save(resultado);
         } else {
-            throw new RuntimeException("Resultado de aprendizaje no encontrado con ID: " + id);
+            throw new RecursoNoEncontradoException("Resultado de aprendizaje no encontrado con ID: " + id);
         }
     }
 
@@ -46,7 +47,7 @@ public class ResultadoAprendizajeService {
         if (resultadoAprendizajeRepository.existsById(id)) {
             resultadoAprendizajeRepository.deleteById(id);
         } else {
-            throw new RuntimeException("Resultado de aprendizaje no encontrado con ID: " + id);
+            throw new RecursoNoEncontradoException("Resultado de aprendizaje no encontrado con ID: " + id);
         }
     }
 }

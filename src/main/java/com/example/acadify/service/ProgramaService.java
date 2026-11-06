@@ -1,5 +1,6 @@
 package com.example.acadify.service;
 
+import com.example.acadify.exception.RecursoNoEncontradoException;
 import com.example.acadify.model.Programa;
 import com.example.acadify.repository.ProgramaRepository;
 import org.springframework.stereotype.Service;
@@ -22,7 +23,7 @@ public class ProgramaService {
 
     public Programa obtenerPorId(Long id) {
         return programaRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Programa no encontrado con ID: " + id));
+                .orElseThrow(() -> new RecursoNoEncontradoException("Programa no encontrado con ID: " + id));
     }
 
     public Programa guardarPrograma(Programa programa) {
@@ -39,7 +40,7 @@ public class ProgramaService {
             programa.setActivo(programaActualizado.getActivo());
             return programaRepository.save(programa);
         } else {
-            throw new RuntimeException("Programa no encontrado con ID: " + id);
+            throw new RecursoNoEncontradoException("Programa no encontrado con ID: " + id);
         }
     }
 
@@ -47,7 +48,7 @@ public class ProgramaService {
         if (programaRepository.existsById(id)) {
             programaRepository.deleteById(id);
         } else {
-            throw new RuntimeException("Programa no encontrado con ID: " + id);
+            throw new RecursoNoEncontradoException("Programa no encontrado con ID: " + id);
         }
     }
 }

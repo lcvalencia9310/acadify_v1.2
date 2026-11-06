@@ -1,5 +1,7 @@
 package com.example.acadify.service;
 
+import com.example.acadify.exception.RecursoNoEncontradoException;
+import com.example.acadify.exception.SolicitudInvalidaException;
 import com.example.acadify.model.ResultadoAprendizaje;
 import com.example.acadify.model.Syllabus;
 import com.example.acadify.repository.ResultadoAprendizajeRepository;
@@ -28,7 +30,7 @@ public class SyllabusService {
 
     public Syllabus obtenerPorId(Long id) {
         return syllabusRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Syllabus no encontrado con ID: " + id));
+                .orElseThrow(() -> new RecursoNoEncontradoException("Syllabus no encontrado con ID: " + id));
     }
 
     public Syllabus guardarSyllabus(Syllabus syllabus) {
@@ -46,7 +48,7 @@ public class SyllabusService {
             syllabus.setResultadosCubiertos(resolverResultadosCubiertos(syllabusActualizado));
             return syllabusRepository.save(syllabus);
         } else {
-            throw new RuntimeException("Syllabus no encontrado con ID: " + id);
+            throw new RecursoNoEncontradoException("Syllabus no encontrado con ID: " + id);
         }
     }
 
@@ -66,12 +68,12 @@ public class SyllabusService {
 
         for (ResultadoAprendizaje solicitado : solicitados) {
             ResultadoAprendizaje resultado = resultadoAprendizajeRepository.findById(solicitado.getIdResultado())
-                    .orElseThrow(() -> new RuntimeException(
+                    .orElseThrow(() -> new RecursoNoEncontradoException(
                             "Resultado de aprendizaje no encontrado con ID: " + solicitado.getIdResultado()));
 
             Long idAsignaturaResultado = resultado.getAsignatura().getIdAsignatura();
             if (idAsignaturaSyllabus == null || !idAsignaturaSyllabus.equals(idAsignaturaResultado)) {
-                throw new RuntimeException(
+                throw new SolicitudInvalidaException(
                         "El resultado de aprendizaje " + resultado.getIdResultado()
                                 + " no pertenece a la asignatura de este syllabus");
             }
@@ -84,7 +86,7 @@ public class SyllabusService {
         if (syllabusRepository.existsById(id)) {
             syllabusRepository.deleteById(id);
         } else {
-            throw new RuntimeException("Syllabus no encontrado con ID: " + id);
+            throw new RecursoNoEncontradoException("Syllabus no encontrado con ID: " + id);
         }
     }
 }

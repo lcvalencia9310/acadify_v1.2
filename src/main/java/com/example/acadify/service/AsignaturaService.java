@@ -1,5 +1,6 @@
 package com.example.acadify.service;
 
+import com.example.acadify.exception.RecursoNoEncontradoException;
 import com.example.acadify.model.Asignatura;
 import com.example.acadify.repository.AsignaturaRepository;
 import org.springframework.stereotype.Service;
@@ -22,7 +23,7 @@ public class AsignaturaService {
 
     public Asignatura obtenerPorId(Long id) {
         return asignaturaRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Asignatura no encontrada con ID: " + id));
+                .orElseThrow(() -> new RecursoNoEncontradoException("Asignatura no encontrada con ID: " + id));
     }
 
     public Asignatura guardarAsignatura(Asignatura asignatura) {
@@ -42,7 +43,7 @@ public class AsignaturaService {
             asignatura.setPrograma(asignaturaActualizada.getPrograma());
             return asignaturaRepository.save(asignatura);
         } else {
-            throw new RuntimeException("Asignatura no encontrada con ID: " + id);
+            throw new RecursoNoEncontradoException("Asignatura no encontrada con ID: " + id);
         }
     }
 
@@ -50,7 +51,7 @@ public class AsignaturaService {
         if (asignaturaRepository.existsById(id)) {
             asignaturaRepository.deleteById(id);
         } else {
-            throw new RuntimeException("Asignatura no encontrada con ID: " + id);
+            throw new RecursoNoEncontradoException("Asignatura no encontrada con ID: " + id);
         }
     }
 }
