@@ -38,6 +38,7 @@ public class AsignaturaService {
             asignatura.setNombreAsignatura(asignaturaActualizada.getNombreAsignatura());
             asignatura.setCreditos(asignaturaActualizada.getCreditos());
             asignatura.setIntensidadHoraria(asignaturaActualizada.getIntensidadHoraria());
+            asignatura.setSemestre(asignaturaActualizada.getSemestre());
             asignatura.setPrograma(asignaturaActualizada.getPrograma());
             return asignaturaRepository.save(asignatura);
         } else {
