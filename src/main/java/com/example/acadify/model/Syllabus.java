@@ -2,6 +2,8 @@ package com.example.acadify.model;
 
 import jakarta.persistence.*;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "syllabus")
@@ -18,6 +20,14 @@ public class Syllabus {
     @OneToOne
     @JoinColumn(name = "id_asignatura", nullable = false, unique = true)
     private Asignatura asignatura;
+
+    @ManyToMany
+    @JoinTable(
+            name = "syllabus_resultado_aprendizaje",
+            joinColumns = @JoinColumn(name = "id_syllabus"),
+            inverseJoinColumns = @JoinColumn(name = "id_resultado")
+    )
+    private List<ResultadoAprendizaje> resultadosCubiertos = new ArrayList<>();
 
     @Column(name = "fecha_creacion", updatable = false)
     private LocalDate fechaCreacion;
@@ -43,6 +53,9 @@ public class Syllabus {
 
     public Asignatura getAsignatura() { return asignatura; }
     public void setAsignatura(Asignatura asignatura) { this.asignatura = asignatura; }
+
+    public List<ResultadoAprendizaje> getResultadosCubiertos() { return resultadosCubiertos; }
+    public void setResultadosCubiertos(List<ResultadoAprendizaje> resultadosCubiertos) { this.resultadosCubiertos = resultadosCubiertos; }
 
     public LocalDate getFechaCreacion() { return fechaCreacion; }
 }
