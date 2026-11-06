@@ -7,6 +7,12 @@
 -- códigos únicos (codigo_programa / codigo_asignatura) — eso es
 -- intencional, para no duplicar datos por accidente.
 --
+-- Carga, en cascada: 1 Programa → 47 Asignaturas (10 semestres) →
+-- 94 Resultados de Aprendizaje (2 por asignatura) → 47 Syllabus
+-- (1 por asignatura) → cada syllabus vinculado a los resultados de
+-- su misma asignatura. Los textos de resultados/syllabus son
+-- genéricos, generados a partir del nombre de cada asignatura.
+--
 -- Usa la columna `semestre` de `asignatura` (commit 9f31552 del
 -- backend) para que la Malla Curricular de Acadify la agrupe bien.
 --
@@ -100,8 +106,57 @@ INSERT INTO asignatura (codigo_asignatura, nombre_asignatura, creditos, intensid
 ('SIM-1002', 'Emprendimiento y Gestión Empresarial', 3, 48, 10, @id_programa),
 ('SIM-1003', 'Seminario de Investigación', 2, 32, 10, @id_programa);
 
+-- =====================================================================
+-- Resultados de Aprendizaje (2 genéricos por asignatura, generados a
+-- partir del nombre de cada una — no texto único por materia, son datos
+-- de ejemplo igual que el resto del script).
+-- =====================================================================
+
+INSERT INTO resultado_aprendizaje (descripcion, id_asignatura)
+SELECT CONCAT('Aplica los conceptos fundamentales de ', nombre_asignatura, ' en la solución de problemas propios del programa.'), id_asignatura
+FROM asignatura WHERE id_programa = @id_programa;
+
+INSERT INTO resultado_aprendizaje (descripcion, id_asignatura)
+SELECT CONCAT('Desarrolla ejercicios prácticos y evalúa resultados relacionados con ', nombre_asignatura, '.'), id_asignatura
+FROM asignatura WHERE id_programa = @id_programa;
+
+-- =====================================================================
+-- Syllabus (1 por asignatura, 1:1) — descripción genérica basada en
+-- el nombre, créditos e intensidad horaria de cada asignatura.
+-- =====================================================================
+
+INSERT INTO syllabus (descripcion, id_asignatura, fecha_creacion)
+SELECT
+    CONCAT(
+        'Plan de contenido de ', nombre_asignatura, ': fundamentos teóricos, ',
+        'actividades prácticas y evaluación por proyectos. Créditos: ', creditos,
+        ' · Intensidad horaria: ', intensidad_horaria, ' h.'
+    ),
+    id_asignatura,
+    CURDATE()
+FROM asignatura WHERE id_programa = @id_programa;
+
+-- =====================================================================
+-- Vincula cada syllabus con los Resultados de Aprendizaje de su misma
+-- asignatura (tabla intermedia syllabus_resultado_aprendizaje).
+-- =====================================================================
+
+INSERT INTO syllabus_resultado_aprendizaje (id_syllabus, id_resultado)
+SELECT s.id_syllabus, r.id_resultado
+FROM syllabus s
+JOIN asignatura a ON a.id_asignatura = s.id_asignatura
+JOIN resultado_aprendizaje r ON r.id_asignatura = a.id_asignatura
+WHERE a.id_programa = @id_programa;
+
 COMMIT;
 
 -- Verificación rápida:
 -- SELECT semestre, COUNT(*) AS asignaturas, SUM(creditos) AS creditos
 -- FROM asignatura WHERE id_programa = @id_programa GROUP BY semestre ORDER BY semestre;
+--
+-- SELECT a.nombre_asignatura, COUNT(DISTINCT r.id_resultado) AS resultados, COUNT(DISTINCT s.id_syllabus) AS syllabus
+-- FROM asignatura a
+-- LEFT JOIN resultado_aprendizaje r ON r.id_asignatura = a.id_asignatura
+-- LEFT JOIN syllabus s ON s.id_asignatura = a.id_asignatura
+-- WHERE a.id_programa = @id_programa
+-- GROUP BY a.id_asignatura;
